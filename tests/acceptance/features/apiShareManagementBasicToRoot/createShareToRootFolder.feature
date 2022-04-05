@@ -254,7 +254,9 @@ Feature: sharing
     And the response should contain 4 entries
     And folder "/folder1" should be included as path in the response
     And folder "/folder1/folder2" should be included as path in the response
-    And user "Alice" sends HTTP method "GET" to OCS API endpoint "/apps/files_sharing/api/v1/shares?path=/folder1/folder2"
+    When user "Alice" sends HTTP method "GET" to OCS API endpoint "/apps/files_sharing/api/v1/shares?path=/folder1/folder2"
+    Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "200"
     And the response should contain 2 entries
     And folder "/folder1" should not be included as path in the response
     And folder "/folder1/folder2" should be included as path in the response
@@ -400,12 +402,14 @@ Feature: sharing
     And user "Alice" has uploaded file with content "some content" to "lorem.txt"
     When user "Alice" shares file "lorem.txt" with group "grp1" using the sharing API
     And the administrator adds user "Carol" to group "grp1" using the provisioning API
-    Then the content of file "lorem.txt" for user "Brian" should be "some content"
+    Then the OCS status code of responses on all endpoints should be "<ocs_status_code>"
+    And the HTTP status code of responses on all endpoints should be "200"
+    And the content of file "lorem.txt" for user "Brian" should be "some content"
     And the content of file "lorem.txt" for user "Carol" should be "some content"
     Examples:
-      | ocs_api_version |
-      | 1               |
-      | 2               |
+      | ocs_api_version | ocs_status_code |
+      | 1               | 100             |
+      | 2               | 200             |
 
   @skipOnLDAP
   # deleting an LDAP group is not relevant or possible using the provisioning API
@@ -459,7 +463,8 @@ Feature: sharing
     And user "Brian" has moved file "/textfile0.txt" to "/common/textfile0.txt"
     And user "Brian" has moved file "/common/textfile0.txt" to "/common/sub/textfile0.txt"
     When user "Carol" uploads file "filesForUpload/file_to_overwrite.txt" to "/textfile0.txt" using the WebDAV API
-    Then the content of file "/common/sub/textfile0.txt" for user "Carol" should be "BLABLABLA" plus end-of-line
+    Then the HTTP status code should be "204"
+    And the content of file "/common/sub/textfile0.txt" for user "Carol" should be "BLABLABLA" plus end-of-line
     And the content of file "/textfile0.txt" for user "Carol" should be "BLABLABLA" plus end-of-line
     And user "Carol" should see the following elements
       | /common/sub/textfile0.txt |
@@ -537,8 +542,8 @@ Feature: sharing
     And user "Alice" has created folder "/Folder1"
     And user "Alice" has created folder "/Folder2"
     And user "Alice" has shared folder "/Folder1" with user "Brian"
-    When user "Alice" moves folder "/Folder2" to "/renamedFolder2" using the WebDAV API
-    And user "Alice" shares folder "/renamedFolder2" with user "Brian" using the sharing API
+    And user "Alice" has moved folder "/Folder2" to "/renamedFolder2"
+    When user "Alice" shares folder "/renamedFolder2" with user "Brian" using the sharing API
     Then the OCS status code should be "<ocs_status_code>"
     And the HTTP status code should be "200"
     And the fields of the last response to user "Alice" sharing with user "Brian" should include
