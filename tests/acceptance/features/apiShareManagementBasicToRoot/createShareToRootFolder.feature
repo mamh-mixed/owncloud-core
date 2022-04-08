@@ -373,16 +373,14 @@ Feature: sharing
     And user "Alice" has created folder "/PARENT"
     And user "Alice" has uploaded file with content "file in parent folder" to "/PARENT/parent.txt"
     When user "Alice" shares folder "/PARENT" with group "😀 😁" using the sharing API
-    Then user "Brian" should see the following elements
+    Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "200"
+    And user "Brian" should see the following elements
       | /PARENT/           |
       | /PARENT/parent.txt |
-    And the OCS status code should be "<ocs_status_code>"
-    And the HTTP status code should be "200"
     And user "Carol" should see the following elements
       | /PARENT/           |
       | /PARENT/parent.txt |
-    And the OCS status code should be "<ocs_status_code>"
-    And the HTTP status code should be "200"
     Examples:
       | ocs_api_version | ocs_status_code |
       | 1               | 100             |
@@ -400,10 +398,10 @@ Feature: sharing
       | grp1      |
     And user "Brian" has been added to group "grp1"
     And user "Alice" has uploaded file with content "some content" to "lorem.txt"
-    When user "Alice" shares file "lorem.txt" with group "grp1" using the sharing API
-    And the administrator adds user "Carol" to group "grp1" using the provisioning API
-    Then the OCS status code of responses on all endpoints should be "<ocs_status_code>"
-    And the HTTP status code of responses on all endpoints should be "200"
+    And user "Alice" has shared file "lorem.txt" with group "grp1"
+    When the administrator adds user "Carol" to group "grp1" using the provisioning API
+    Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "200"
     And the content of file "lorem.txt" for user "Brian" should be "some content"
     And the content of file "lorem.txt" for user "Carol" should be "some content"
     Examples:
@@ -478,8 +476,8 @@ Feature: sharing
     And user "Alice" has created folder "userZeroFolder"
     And user "Alice" has shared folder "userZeroFolder" with user "Brian"
     And user "Brian" has created folder "userZeroFolder/userOneFolder"
-    When user "Brian" shares folder "userZeroFolder/userOneFolder" with user "Carol" with permissions "read, share" using the sharing API
-    And user "Carol" shares folder "userOneFolder" with user "Brian" using the sharing API
+    And user "Brian" has shared folder "userZeroFolder/userOneFolder" with user "Carol" with permissions "read, share"
+    When user "Carol" shares folder "userOneFolder" with user "Brian" using the sharing API
     Then the HTTP status code should be "200"
 #    Then the HTTP status code should be "405"
     And as "Brian" folder "userOneFolder" should not exist
@@ -492,8 +490,8 @@ Feature: sharing
     And user "Alice" has created folder "userZeroFolder"
     And user "Alice" has shared folder "userZeroFolder" with user "Brian"
     And user "Brian" has created folder "userZeroFolder/userOneFolder"
-    When user "Brian" shares folder "userZeroFolder/userOneFolder" with user "Carol" with permissions "read, share" using the sharing API
-    And user "Carol" shares folder "userOneFolder" with user "Alice" using the sharing API
+    And user "Brian" has shared folder "userZeroFolder/userOneFolder" with user "Carol" with permissions "read, share"
+    When user "Carol" shares folder "userOneFolder" with user "Alice" using the sharing API
     Then the HTTP status code should be "200"
 #    Then the HTTP status code should be "405"
     And as "Alice" folder "userOneFolder" should not exist
@@ -509,8 +507,8 @@ Feature: sharing
     And user "Alice" has shared folder "userZeroFolder" with user "Brian"
     And user "Alice" has shared folder "userZeroFolder" with user "Carol"
     And user "Brian" has created folder "userZeroFolder/userOneFolder"
-    When user "Brian" shares folder "userZeroFolder/userOneFolder" with user "David" with permissions "read, share" using the sharing API
-    And user "David" shares folder "userOneFolder" with user "Carol" using the sharing API
+    And user "Brian" has shared folder "userZeroFolder/userOneFolder" with user "David" with permissions "read, share"
+    When user "David" shares folder "userOneFolder" with user "Carol" using the sharing API
     Then the HTTP status code should be "200"
 #    Then the HTTP status code should be "405"
     And as "Carol" folder "userOneFolder" should not exist
