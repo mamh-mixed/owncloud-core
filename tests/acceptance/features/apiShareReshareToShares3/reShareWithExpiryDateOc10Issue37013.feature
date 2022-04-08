@@ -31,9 +31,7 @@ Feature: resharing a resource with an expiration date
       | shareWith   | Carol                 |
     Then the HTTP status code should be "200"
     And the OCS status code should be "<ocs_status_code>"
-    When user "Carol" accepts share "/textfile0.txt" offered by user "Brian" using the sharing API
-    Then the HTTP status code should be "200"
-    And the OCS status code should be "<ocs_status_code>"
+    And user "Carol" should be able to accept pending share "/textfile0.txt" offered by user "Brian"
     And the information of the last share of user "Alice" should include
       | expiration | +20 days |
     And the response when user "Carol" gets the info of the last share should include
@@ -69,9 +67,7 @@ Feature: resharing a resource with an expiration date
       | expireDate  | +40 days              |
     Then the HTTP status code should be "200"
     And the OCS status code should be "<ocs_status_code>"
-    When user "Carol" accepts share "/textfile0.txt" offered by user "Brian" using the sharing API
-    Then the HTTP status code should be "200"
-    And the OCS status code should be "<ocs_status_code>"
+    And user "Carol" should be able to accept pending share "/textfile0.txt" offered by user "Brian"
     And the information of the last share of user "Alice" should include
       | expiration | +20 days |
     And the response when user "Carol" gets the info of the last share should include
@@ -105,6 +101,7 @@ Feature: resharing a resource with an expiration date
       | expireDate  | +40 days              |
     Then the HTTP status code should be "<http_status_code>"
     And the OCS status code should be "404"
+    And the sharing API should report to user "Carol" that no shares are in the pending state
     And the information of the last share of user "Alice" should include
       | expiration | +20 days |
     Examples:
