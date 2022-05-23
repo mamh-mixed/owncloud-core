@@ -232,6 +232,7 @@ config = {
                 "cliMain",
                 "cliProvisioning",
                 "cliTrashbin",
+                "cliMigration",
             ],
             "filterTags": "~@local_storage&&~@files_external-app-required",
             "emailNeeded": True,
