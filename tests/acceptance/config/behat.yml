@@ -780,15 +780,6 @@ default:
         - OccContext:
         - AppManagementContext:
 
-    cliMigration:
-      paths:
-        - '%paths.base%/../features/cliMigration'
-      context: *common_ldap_suite_context
-      contexts:
-        - FeatureContext: *common_feature_context_params
-        - OccContext:
-        - AppManagementContext:
-
     cliProvisioning:
       paths:
         - '%paths.base%/../features/cliProvisioning'

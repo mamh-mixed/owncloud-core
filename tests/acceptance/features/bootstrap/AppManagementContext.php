@@ -237,63 +237,6 @@ class AppManagementContext implements Context {
 	}
 
 	/**
-	 * @When the administrator lists migration status of app :app
-	 *
-	 * @param string $app
-	 *
-	 * @return void
-	 * @throws Exception
-	 */
-	public function theAdministratorListsMigrationStatusOfApp(string $app):void {
-		$this->featureContext->runOcc(['migrations:status', $app]);
-	}
-
-	/**
-	 * @Then the following migration status should have been listed
-	 *
-	 * @param TableNode $table
-	 *
-	 * @return void
-	 * @throws Exception
-	 */
-	public function theFollowingMigrationStatusShouldHaveBeenListed(TableNode $table): void {
-		$commandOutput = $this->featureContext->getStdOutOfOccCommand();
-		$actualOuput = [];
-		$infoArr = explode("\n", $commandOutput);
-		foreach ($infoArr as $info) {
-			if (!empty($info)) {
-				$row = \trim(\str_replace('>>', '', $info));
-				$rowCol = explode(":", $row);
-				$actualOuput[\trim($rowCol[0])] = \trim($rowCol[1]);
-			}
-		}
-		$expectedOutput = $table->getRowsHash();
-		foreach ($expectedOutput as $key => $value) {
-			try {
-				$actualValue = $actualOuput[$key];
-			} catch (Exception $e) {
-				Assert:: fail("Expected '$key' but not found!\nActual Migration status: " . \print_r($actualOuput, true));
-			}
-			if ($this->isRegex($value)) {
-				$match = preg_match($value, $actualValue);
-				Assert:: assertEquals(1, $match, "Pattern '$value' is not matchable with value '$actualValue'");
-			} else {
-				Assert:: assertEquals($value, $actualValue, "Expected '$key' to have value '$value' but got '$actualValue'");
-			}
-		}
-	}
-
-	/**
-	 * @param string $value
-	 *
-	 * @return int
-	 */
-	public function isRegex($value) {
-		$regex = "/^\/[\s\S]+\/$/";
-		return preg_match($regex, $value);
-	}
-
-	/**
 	 * @When the administrator lists the enabled and disabled apps using the occ command
 	 *
 	 * @return void

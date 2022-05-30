@@ -16,6 +16,7 @@ Feature: Migration status of apps
       | Next Version                    | /\S+/         |
       | Latest Version                  | /\d+/         |
       | Executed Migrations             | /\d+/         |
-      | Executed Unavailable Migrations | /\d+/         |
+      | Executed Unavailable Migrations | 0             |
       | Available Migrations            | /\d+/         |
-      | New Migrations                  | /\d+/         |
+      | New Migrations                  | 0             |
+    And the Executed Migrations should equal the Available Migrations
