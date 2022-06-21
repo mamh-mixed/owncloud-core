@@ -58,6 +58,10 @@ class SearchContext implements Context {
 		?string	  $limit = null,
 		TableNode $properties = null
 	):void {
+		if (\TestHelpers\OcisHelper::isTestingOnOcis()) {
+			// for ocis 1 sec wait is otherwise response is not set
+			sleep(1);
+		}
 		$user = $this->featureContext->getActualUsername($user);
 		$baseUrl = $this->featureContext->getBaseUrl();
 		$password = $this->featureContext->getPasswordForUser($user);
