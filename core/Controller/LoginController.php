@@ -103,7 +103,7 @@ class LoginController extends Controller {
 	public function logout() {
 		$loginToken = $this->request->getCookie('oc_token');
 		if ($loginToken !== null) {
-			$this->config->deleteUserValue($this->userSession->getUser()->getUID(), 'login_token', $loginToken);
+			$this->userSession->clearRememberMeTokensForLoggedInUser();
 		}
 		$this->userSession->logout();
 
@@ -122,7 +122,7 @@ class LoginController extends Controller {
 	 * @return TemplateResponse|RedirectResponse
 	 */
 	public function showLoginForm($user, $redirect_url, $remember_login) {
-		if (\OC_User::handleApacheAuth() || $this->userSession->isLoggedIn()) {
+		if (\OC_User::handleApacheAuth() || $this->userSession->isLoggedIn() || $this->userSession->tryRememberMeLogin($this->request)) {
 			return new RedirectResponse($this->getDefaultUrl());
 		}
 
@@ -227,11 +227,13 @@ class LoginController extends Controller {
 	 * @param string $password
 	 * @param string $redirect_url
 	 * @param string $timezone
+	 * @param string $remember_login "1" implies we should remember the login; not present (or null)
+	 * implies we shouldn't need to do anything
 	 * @return RedirectResponse
 	 * @throws \OCP\PreConditionNotMetException
 	 * @throws \OC\User\LoginException
 	 */
-	public function tryLogin($user, $password, $redirect_url, $timezone = null) {
+	public function tryLogin($user, $password, $redirect_url, $timezone = null, $remember_login = null) {
 		$originalUser = $user;
 		// TODO: Add all the insane error handling
 		$loginResult = $this->userSession->login($user, $password);
@@ -263,6 +265,9 @@ class LoginController extends Controller {
 		// TODO: remove password checks from above and let the user session handle failures
 		// requires https://github.com/owncloud/core/pull/24616
 		$this->userSession->createSessionToken($this->request, $userObject->getUID(), $user, $password);
+		if ($remember_login) {
+			$this->userSession->setNewRememberMeTokenForLoggedInUser();
+		}
 
 		// User has successfully logged in, now remove the password reset link, when it is available
 		$this->config->deleteUserValue($userObject->getUID(), 'owncloud', 'lostpassword');
