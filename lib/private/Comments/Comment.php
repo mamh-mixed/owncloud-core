@@ -221,6 +221,11 @@ class Comment implements IComment {
 		if (!\is_string($verb) || !\trim($verb)) {
 			throw new \InvalidArgumentException('Non-empty String expected.');
 		}
+		$verb = \trim($verb);
+		if (\mb_strlen($verb, 'UTF-8') > IComment::MAX_VERB_LENGTH) {
+			throw new \InvalidArgumentException('Comment verb must not exceed ' . IComment::MAX_VERB_LENGTH . ' characters');
+		}
+
 		$this->data['verb'] = \trim($verb);
 		return $this;
 	}
