@@ -38,6 +38,7 @@ ownCloud admins and users.
 
 ## Summary
 
+* Bugfix - Fix subadmin email change updating caller's address instead of target's: [#41574](https://github.com/owncloud/core/pull/41574)
 * Change - Update M$ Office icons: [#41347](https://github.com/owncloud/core/pull/41347)
 * Change - No longer store auto loader information in any memory cache: [#41376](https://github.com/owncloud/core/pull/41376)
 * Change - Update PHP dependencies: [#41450](https://github.com/owncloud/core/pull/41450)
@@ -46,6 +47,15 @@ ownCloud admins and users.
 * Change - Use configurable URL for internet connectivity check: [#41506](https://github.com/owncloud/core/pull/41506)
 
 ## Details
+
+* Bugfix - Fix subadmin email change updating caller's address instead of target's: [#41574](https://github.com/owncloud/core/pull/41574)
+
+   The verification token and confirmation link in the subadmin path of
+   setMailAddress were associated with the caller's account instead of the target
+   user's account. Clicking the confirmation link changed the subadmin's email
+   rather than the intended target's email.
+
+   https://github.com/owncloud/core/pull/41574
 
 * Change - Update M$ Office icons: [#41347](https://github.com/owncloud/core/pull/41347)
 
